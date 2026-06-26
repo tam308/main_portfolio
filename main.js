@@ -73,6 +73,53 @@ document.querySelectorAll('.project__gallery').forEach(function (gallery) {
   });
 });
 
+// Lightbox: click a gallery image to expand it
+(function () {
+  var lightbox = document.createElement('div');
+  lightbox.className = 'lightbox';
+  lightbox.setAttribute('role', 'dialog');
+  lightbox.setAttribute('aria-modal', 'true');
+
+  var fullImg = document.createElement('img');
+  fullImg.className = 'lightbox__img';
+  fullImg.alt = '';
+
+  var close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'lightbox__close';
+  close.setAttribute('aria-label', 'Close image');
+  close.innerHTML = '&times;';
+
+  lightbox.appendChild(fullImg);
+  lightbox.appendChild(close);
+  document.body.appendChild(lightbox);
+
+  function open(src, alt) {
+    fullImg.src = src;
+    fullImg.alt = alt || '';
+    lightbox.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hide() {
+    lightbox.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.gallery__track > img').forEach(function (img) {
+    img.addEventListener('click', function () {
+      open(img.currentSrc || img.src, img.alt);
+    });
+  });
+
+  lightbox.addEventListener('click', function (e) {
+    if (e.target !== fullImg) hide();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && lightbox.classList.contains('is-open')) hide();
+  });
+})();
+
 // Reveal sections on scroll
 var reveals = document.querySelectorAll('.reveal');
 if ('IntersectionObserver' in window && reveals.length) {
